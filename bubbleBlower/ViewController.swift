@@ -36,7 +36,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         imageView.contentMode = .scaleAspectFit
         imageView.image = #imageLiteral(resourceName: "bubble_blower")
         imageView.alpha = 0.8
-        self.sceneView.addSubview(imageView)
+        //self.sceneView.addSubview(imageView)
         
         initMicrophone()
     }

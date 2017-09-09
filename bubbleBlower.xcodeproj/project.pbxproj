@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30ABEA241F6452C6006AEFA9 /* soapBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABEA231F6452C6006AEFA9 /* soapBubble.swift */; };
+		30ABEA261F645A31006AEFA9 /* arCalibration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABEA251F645A30006AEFA9 /* arCalibration.swift */; };
 		30CFA3821F5D8E170006FBDD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CFA3811F5D8E170006FBDD /* AppDelegate.swift */; };
 		30CFA3841F5D8E170006FBDD /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 30CFA3831F5D8E170006FBDD /* art.scnassets */; };
 		30CFA3861F5D8E170006FBDD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CFA3851F5D8E170006FBDD /* ViewController.swift */; };
@@ -15,7 +17,6 @@
 		30CFA38E1F5D8E170006FBDD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30CFA38C1F5D8E170006FBDD /* LaunchScreen.storyboard */; };
 		30CFA3991F5D8E170006FBDD /* bubbleBlowerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CFA3981F5D8E170006FBDD /* bubbleBlowerTests.swift */; };
 		30CFA3A41F5D8E170006FBDD /* bubbleBlowerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CFA3A31F5D8E170006FBDD /* bubbleBlowerUITests.swift */; };
-		30CFA3B21F5D8E3E0006FBDD /* soapBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CFA3B11F5D8E3E0006FBDD /* soapBubble.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		30ABEA231F6452C6006AEFA9 /* soapBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = soapBubble.swift; sourceTree = "<group>"; };
+		30ABEA251F645A30006AEFA9 /* arCalibration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = arCalibration.swift; sourceTree = "<group>"; };
 		30CFA37E1F5D8E170006FBDD /* bubbleBlower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bubbleBlower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30CFA3811F5D8E170006FBDD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30CFA3831F5D8E170006FBDD /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -50,7 +53,6 @@
 		30CFA39F1F5D8E170006FBDD /* bubbleBlowerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = bubbleBlowerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		30CFA3A31F5D8E170006FBDD /* bubbleBlowerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bubbleBlowerUITests.swift; sourceTree = "<group>"; };
 		30CFA3A51F5D8E170006FBDD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		30CFA3B11F5D8E3E0006FBDD /* soapBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = soapBubble.swift; path = ../../soapBubble/soapBubble/soapBubble.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,7 +106,8 @@
 				30CFA3811F5D8E170006FBDD /* AppDelegate.swift */,
 				30CFA3831F5D8E170006FBDD /* art.scnassets */,
 				30CFA3851F5D8E170006FBDD /* ViewController.swift */,
-				30CFA3B11F5D8E3E0006FBDD /* soapBubble.swift */,
+				30ABEA231F6452C6006AEFA9 /* soapBubble.swift */,
+				30ABEA251F645A30006AEFA9 /* arCalibration.swift */,
 				30CFA3871F5D8E170006FBDD /* Main.storyboard */,
 				30CFA38A1F5D8E170006FBDD /* Assets.xcassets */,
 				30CFA38C1F5D8E170006FBDD /* LaunchScreen.storyboard */,
@@ -266,7 +269,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30CFA3B21F5D8E3E0006FBDD /* soapBubble.swift in Sources */,
+				30ABEA241F6452C6006AEFA9 /* soapBubble.swift in Sources */,
+				30ABEA261F645A31006AEFA9 /* arCalibration.swift in Sources */,
 				30CFA3861F5D8E170006FBDD /* ViewController.swift in Sources */,
 				30CFA3821F5D8E170006FBDD /* AppDelegate.swift in Sources */,
 			);
