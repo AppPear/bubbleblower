@@ -13,7 +13,7 @@ class Bubble: SCNNode {
     
     override init() {
         super.init()
-        let bubble = SCNPlane(width: 0.2, height: 0.2)
+        let bubble = SCNPlane(width: 0.25, height: 0.25)
         let material = SCNMaterial()
         material.diffuse.contents = #imageLiteral(resourceName: "bubbleText")
         material.isDoubleSided = true

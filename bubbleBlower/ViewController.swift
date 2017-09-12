@@ -16,29 +16,56 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var imageView:UIImageView!
     @IBOutlet var sceneView: ARSCNView!
     let soapBubble = Bubble()
+    var averageBackgroundNoise:Float?
+    var arIsReady = false
+    var bubblesLeft = 20
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Set the view's delegate
+        initMicrophone()
+
         sceneView.delegate = self
-        
-        // Show statistics such as fps and timing information
-        // Create a new scene
         let scene = SCNScene()
-        
-        
-        // Set the scene to the view
         sceneView.scene = scene
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         sceneView.addGestureRecognizer(tapGesture)
         
-        imageView = UIImageView(frame: CGRect(x: 0, y:  self.view.frame.size.height*0.5, width: self.view.frame.size.width, height: self.view.frame.size.height*0.5))
+        let calibrationView = arCalibration(frame:self.view.bounds)
+        self.view.addSubview(calibrationView)
+        calibrationView.calibrationDone = {  [weak self] done in
+            if done {
+                self?.initAR()
+                self?.sceneView.debugOptions = []
+                self?.arIsReady = true
+            }
+        }
+      
+    }
+    
+    func initAR(){
+        imageView = UIImageView(frame: CGRect(x: 0, y: self.view.frame.size.height*0.5, width: self.view.frame.size.width, height: self.view.frame.size.height*0.5))
         imageView.contentMode = .scaleAspectFit
         imageView.image = #imageLiteral(resourceName: "bubble_blower")
-        imageView.alpha = 0.8
-        //self.sceneView.addSubview(imageView)
+        imageView.alpha = 0.9
+        setProgress(Double(bubblesLeft/20))
+        self.sceneView.addSubview(imageView)
         
-        initMicrophone()
+    }
+    
+    func setProgress(_ progress:Double){
+        print(progress)
+        let mutablePath = CGMutablePath()
+        mutablePath.addRect(CGRect(x: 0, y: 0, width: imageView.frame.size.width, height: imageView.frame.size.height*CGFloat(progress)))
+        let mask = CAShapeLayer()
+        mask.path = mutablePath
+        mask.fillColor = UIColor.white.cgColor
+        imageView.layer.mask = mask
+    }
+    var ARTrackingIsReady:Bool = false {
+        didSet{
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "arTrackingReady"), object: nil)
+        }
     }
     
     func initMicrophone(){
@@ -62,55 +89,50 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             recorder.prepareToRecord()
             recorder.isMeteringEnabled = true
             recorder.record()
-            _ = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(timerCallBack(timer:)), userInfo: recorder, repeats: true)
+            _ = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(timerCallBack(timer:)), userInfo: recorder, repeats: true)
         } catch  {}
     }
+    
+    var averageMicValues = [Float]()
     
     @objc func timerCallBack(timer:Timer){
         let recorder: AVAudioRecorder = timer.userInfo as! AVAudioRecorder
         recorder.updateMeters()
         let avgPower: Float = 160+recorder.averagePower(forChannel: 0)
-        if avgPower > 150 && avgPower < 155 {
-            newBubble()
-            Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false, block: { (timer) in
-                self.newBubble()
-            })
-        }else if avgPower >= 155 && avgPower < 165{
-            newBubble()
-            Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false, block: { (timer) in
-                self.newBubble()
-            })
-            Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false, block: { (timer) in
-                self.newBubble()
-            })
-            Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false, block: { (timer) in
-                self.newBubble()
-            })
-        }else if avgPower >= 165{
-            newBubble()
-            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false, block: { (timer) in
-                self.newBubble()
-            })
-            Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { (timer) in
-                self.newBubble()
-            })
-            Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false, block: { (timer) in
-                self.newBubble()
-            })
-            Timer.scheduledTimer(withTimeInterval: 0.35, repeats: false, block: { (timer) in
-                self.newBubble()
-            })
-            Timer.scheduledTimer(withTimeInterval: 0.45, repeats: false, block: { (timer) in
-                self.newBubble()
-            })
+        if(!arIsReady){
+            averageMicValues.append(avgPower)
+            averageBackgroundNoise = averageMicValues.average
+            print(averageBackgroundNoise)
+        }else{
+            // 100 dB - silence threshold: 20
+            // 130 dB - avg background noise: 4-5
+            if avgPower > 130 && averageBackgroundNoise! < Float(120) {
+                newBubble()
+                Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { (timer) in
+                    self.newBubble()
+                })
+            }else if averageBackgroundNoise! > 120 && avgPower > 136 {
+                newBubble()
+                Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { (timer) in
+                    self.newBubble()
+                })
+            }
         }
+        
     }
     
     @objc func handleTap(_ recgnizer:UITapGestureRecognizer){
         newBubble()
-        //        AudioServicesPlaySystemSound(1519)
     }
     func newBubble(){
+        setProgress(Double(bubblesLeft)/20.0)
+        
+        if bubblesLeft <= 0 {
+            return
+        }else{
+            bubblesLeft -= 1
+        }
+        
         guard let frame = self.sceneView.session.currentFrame else {
             return
         }
@@ -120,15 +142,34 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let position = getNewPosition()
         let newBubble = soapBubble.clone()
         newBubble.position = position
-        newBubble.scale = SCNVector3(1,1,1) * floatBetween(0.4, and: 1)
-        newBubble.runAction(SCNAction.move(by: dir + SCNVector3(floatBetween(-0.5, and:0.5 ),floatBetween(0, and: 1.5),0), duration: TimeInterval(floatBetween(6, and: 9)))) {
+        newBubble.scale = SCNVector3(1,1,1) * floatBetween(0.6, and: 1)
+      /*  let action = SCNAction.move(by: dir + SCNVector3(floatBetween(-0.5, and:0.5 ),floatBetween(0, and: 1.5),0), duration: TimeInterval(floatBetween(6, and: 9)))
+        action.timingMode = .easeOut
+        newBubble.runAction(action) {
             newBubble.runAction(SCNAction.fadeOut(duration: 0), completionHandler: {
                 DispatchQueue.main.async {
                     playSoftImpact()
                 }
                 newBubble.removeFromParentNode()
             })
-        }
+        }*/
+        
+        let firstAction = SCNAction.move(by: dir.normalized() * 0.5 + SCNVector3(0,0.15,0), duration: 0.5)
+        firstAction.timingMode = .easeOut
+        let secondAction = SCNAction.move(by: dir + SCNVector3(floatBetween(-1.5, and:1.5 ),floatBetween(0, and: 1.5),0), duration: TimeInterval(floatBetween(8, and: 11)))
+        secondAction.timingMode = .easeOut
+        newBubble.runAction(firstAction)
+        newBubble.runAction(secondAction, completionHandler: {
+            newBubble.runAction(SCNAction.fadeOut(duration: 0), completionHandler: {
+                DispatchQueue.main.async {
+                    playSoftImpact()
+                }
+                newBubble.removeFromParentNode()
+            })
+        })
+        
+        
+        
         sceneView.scene.rootNode.addChildNode(newBubble)
     }
     
@@ -187,6 +228,18 @@ class ViewController: UIViewController, ARSCNViewDelegate {
      return node
      }
      */
+    
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        switch camera.trackingState {
+        case .notAvailable:
+            break
+        case .limited:
+            break
+        case .normal:
+            ARTrackingIsReady = true
+            break
+        }
+    }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
@@ -256,5 +309,20 @@ func playSoftImpact() {
         generator.prepare()
         generator.impactOccurred()
     }
+}
+
+extension Array where Element: FloatingPoint {
+    /// Returns the sum of all elements in the array
+    var total: Element {
+        return reduce(0, +)
+    }
+    /// Returns the average of all elements in the array
+    var average: Element {
+        return isEmpty ? 0 : total / Element(count)
+    }
+}
+
+func dbToGain(dB:Float) -> Float {
+    return pow(2, dB/6)
 }
 

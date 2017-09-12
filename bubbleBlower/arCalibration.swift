@@ -44,7 +44,7 @@ class arCalibration: UIView{
                 guideImage!.image = #imageLiteral(resourceName: "arrow")
                 heading?.text = "CALIBRATION"
                 subHeading?.text = "Please move your phone to vertical position!"
-                playSoundEffect(name: "effect-new-word")
+                //playSoundEffect(name: "effect-new-word")
                 UIView.animate(withDuration: 0.25, delay: 1, options: .curveEaseIn, animations: {
                     self.guideImage?.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
                 }, completion: { (finished) in
@@ -78,7 +78,7 @@ class arCalibration: UIView{
                 self.phoneImage?.backgroundColor = UIColor(white: 0, alpha: 0)
                 self.guideImage?.layer.mask?.contents = (self.phoneImage?.backgroundColor)!
                 subHeading?.changeTextAnimated(text: "Please pan with your phone to the left")
-                playSoundEffect(name: "effect-interaction-success")
+                //playSoundEffect(name: "effect-interaction-success")
                 playHapticImpact()
                 let motionManager = CMMotionManager()
                 motionManager.deviceMotionUpdateInterval = 1.0 / 60.0
@@ -100,20 +100,19 @@ class arCalibration: UIView{
 
             case .moveRight:()
             playHapticImpact()
-                playSoundEffect(name: "effect-interaction-success")
+                //playSoundEffect(name: "effect-interaction-success")
                 self.guideImage?.image = #imageLiteral(resourceName: "right")
                 subHeading?.changeTextAnimated(text: "Now to the right")
 
             case .doneCalibration:()
                 playHapticSuccess()
-                playSoundEffect(name: "effect-reward-answer-correct")
+                //playSoundEffect(name: "effect-reward-answer-correct")
                 heading?.changeTextAnimated(text: "DONE")
                 subHeading?.text = ""
                 guideImage?.changeImageAnimated(image: #imageLiteral(resourceName: "done"))
                 phoneImage?.image = nil
                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapHandle(_:)))
                 self.addGestureRecognizer(tapGesture)
-                calibrationDone?(true)
                 Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(removeSelfAnimated), userInfo: nil, repeats: false)
             }
         }
@@ -131,6 +130,7 @@ class arCalibration: UIView{
         }) { (finished) in
             if finished {
                 self.removeFromSuperview()
+                self.calibrationDone?(true)
             }
         }
     }
@@ -151,13 +151,13 @@ class arCalibration: UIView{
         
         heading = UILabel(frame: CGRect(x: 0, y: (containerView?.frame.size.height)!*0.66, width: self.frame.size.width, height: (containerView?.frame.size.height)!*0.33/2))
         heading?.textAlignment = .center
-        heading?.textColor = UIColor(hexString: "66cccc")
+        heading?.textColor = UIColor.white
         heading?.font = UIFont(name: "Montserrat-Bold", size: 20)
         containerView?.addSubview(heading!)
         
         subHeading = UILabel(frame: CGRect(x: self.center.x-self.frame.size.width*0.33, y: (containerView?.frame.size.height)!*0.66+((containerView?.frame.size.height)!*0.33/2), width: self.frame.size.width*0.66, height: (containerView?.frame.size.height)!*0.33/2))
         subHeading?.textAlignment = .center
-        subHeading?.textColor = UIColor(hexString: "cccccc")
+        subHeading?.textColor = UIColor.white
         subHeading?.font = UIFont(name: "Montserrat-Regular", size: 16)
         subHeading?.numberOfLines = 2
         containerView?.addSubview(subHeading!)
