@@ -17,6 +17,7 @@ class Bubble: SCNNode {
         let material = SCNMaterial()
         material.diffuse.contents = #imageLiteral(resourceName: "bubbleText")
         material.isDoubleSided = true
+        material.writesToDepthBuffer = false
         material.blendMode = .screen
         bubble.materials = [material]
         self.geometry = bubble

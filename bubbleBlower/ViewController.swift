@@ -18,7 +18,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     let soapBubble = Bubble()
     var averageBackgroundNoise:Float?
     var arIsReady = false
-    var bubblesLeft = 20
+    var bubblesLeft = 50
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -102,7 +102,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         if(!arIsReady){
             averageMicValues.append(avgPower)
             averageBackgroundNoise = averageMicValues.average
-            print(averageBackgroundNoise)
         }else{
             // 100 dB - silence threshold: 20
             // 130 dB - avg background noise: 4-5
